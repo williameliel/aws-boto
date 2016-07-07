@@ -1,9 +1,11 @@
+#import required modules
 import boto3
-import sh
-from sh import rsync
+import os
 
+#create a boto ec2 client
 client = boto3.client('ec2')
 
+#get all instances that are tagged under the sbe-auto-group
 response = client.describe_instances(
   Filters=[
         {
@@ -13,15 +15,17 @@ response = client.describe_instances(
                       ],
             'Name': 'tag-value',
             'Values': [
-                        'sbe-auto-group'
+                        'group-xyz'
                       ],
         },
     ]
 )
 
-#print(response['Reservations'][0]['Instances'])
+destination = '/var/www/vhosts'
+source = destination  + '/foo.com' # /var/www/vhosts/foo.com
+
 for instance in response['Reservations'][0]['Instances']:
-  privateIp= instance['PrivateIpAddress']
-  publicIp = instance['PublicIpAddress']
-  print(publicIp, privateIp)
+  privateIp = instance['PrivateIpAddress'] # depending on your environment you can use either public or private address
+  publicIp = instance['PublicIpAddress'] 
   
+  os.system("rsync -rave 'ssh -i /home/ubuntu/.ssh/aws1.pem' " + source + ' ' +  'ubuntu@' + publicIp + ':' + destination )
