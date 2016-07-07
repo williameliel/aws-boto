@@ -24,5 +24,4 @@ for instance in response['Reservations'][0]['Instances']:
   privateIp= instance['PrivateIpAddress']
   publicIp = instance['PublicIpAddress']
   print(publicIp, privateIp)
-  #rsync -rave "ssh -i /Users/Williamgarcia/.ssh/aws1.pem" ubuntu@52.33.127.143:/var/www/vhost2/rainbowroom/dev/web/content/uploads /Users/Williamgarcia/websites/rainbowroom/web/content
-
+  
